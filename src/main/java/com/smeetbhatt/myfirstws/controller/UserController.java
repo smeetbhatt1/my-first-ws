@@ -19,18 +19,18 @@ public class UserController {
 	
 	@GetMapping(path="/{userId}")
 	public UserRest getUser(@PathVariable String userId) {
+		System.out.println("Getting user");
 		UserRest returnValue = new UserRest();
-		System.out.println("Ctrl");
 		UserDto userDto = userService.getUserByUserId(userId);
 		BeanUtils.copyProperties(userDto, returnValue);
 
-		System.out.println(" after Ctrl");
 		return returnValue;
 	}
 		
 	@PostMapping
 	public UserRest createUser(@RequestBody UserDetailsRequestBody userDetails) {
-		
+
+		System.out.println("Creating user");
 		UserRest returnValue = new UserRest();
 		UserDto userDto = new UserDto();
 		
@@ -44,11 +44,13 @@ public class UserController {
 
 	@PutMapping
 	public String updateUser() {
+		System.out.println("Updating user");
 		return "update user was called";
 	}
 	
 	@DeleteMapping
 	public String deleteUser() {
+		System.out.println("Deletng user");
 		return "delete user was called";
 	}
 }
