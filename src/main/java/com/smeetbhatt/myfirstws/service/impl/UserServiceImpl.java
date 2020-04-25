@@ -10,8 +10,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.smeetbhatt.myfirstws.exceptions.UserServiceException;
 import com.smeetbhatt.myfirstws.io.entity.UserEntity;
 import com.smeetbhatt.myfirstws.io.repositories.UserRepository;
+import com.smeetbhatt.myfirstws.model.response.ErrorMessages;
 import com.smeetbhatt.myfirstws.service.UserService;
 import com.smeetbhatt.myfirstws.shared.Utils;
 import com.smeetbhatt.myfirstws.shared.dto.UserDto;
@@ -82,6 +84,34 @@ public class UserServiceImpl implements UserService {
 		
 		BeanUtils.copyProperties(userEntity, returnedValue);
 		return returnedValue;
+	}
+
+	@Override
+	public UserDto updateUser(String userId, UserDto user) {
+		UserDto returnedValue = new UserDto();
+		UserEntity userEntity = userRepository.findByUserId(userId);
+		
+		if (userEntity == null)
+			throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		
+		userEntity.setFirstName(user.getFirstName());
+		userEntity.setLastName(user.getLastName());
+		
+		UserEntity updatedUser =  userRepository.save(userEntity);
+		BeanUtils.copyProperties(updatedUser, returnedValue);
+		return returnedValue;
+	}
+
+	@Override
+	public void deleteUser(String userId) {
+		UserEntity userEntity = userRepository.findByUserId(userId);
+		
+		if (userEntity == null)
+			throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		
+		userRepository.delete(userEntity);
+		
+		
 	}
 
 	
