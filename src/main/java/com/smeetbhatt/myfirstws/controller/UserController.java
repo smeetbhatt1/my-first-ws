@@ -1,5 +1,8 @@
 package com.smeetbhatt.myfirstws.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -80,5 +83,23 @@ public class UserController {
 		returnValue.setOperationName(RequestOpeartionName.DELETE.name());
 		returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
 		return returnValue;
+	}
+	
+	@GetMapping(
+			produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }
+			)
+	public List<UserRest> getUsers(
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "limit", defaultValue = "10") int limit
+			) {
+		List<UserRest> returnValueList = new ArrayList<>();
+		
+		List<UserDto> users = userService.getUsers(page, limit);
+		for(UserDto userDto : users) {
+			UserRest userRest = new UserRest();
+			BeanUtils.copyProperties(userDto, userRest);
+			returnValueList.add(userRest);
+		}
+		return returnValueList;
 	}
 }
